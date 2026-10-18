@@ -1,0 +1,12 @@
+{
+  "name": "xinjinglong",
+  "title": "心经长版",
+  "source": "https://www.youtube.com/watch?v=ujr7nB-NTcM (excerpt 0:00-04:50)",
+  "sample_rate": 11025,
+  "samples": 3197250,
+  "duration_seconds": 290.0,
+  "codec": "IMA ADPCM; high nibble first; initial predictor/index 0",
+  "original_sha256": "1c10ce06551c2dd1d20ae732e010d2b3e087723fd8a5cffbef019ca2b7c7b4eb",
+  "adpcm_sha256": "fb776420a6d5670e1176798c6f48dacd8442e398802bcb722418bbca1eb0de16",
+  "adpcm_bytes": 1598625
+}

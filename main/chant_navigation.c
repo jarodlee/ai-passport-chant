@@ -1,0 +1,49 @@
+#include "chant_navigation.h"
+#include "chant_model.h"
+#include "chant_network.h"
+chant_action_t chant_navigate(chant_navigation_t *state, chant_key_t key) {
+    chant_action_t action={.audio=-1,.network=-1};
+    if (key==KEY_BACK) {
+        *state=(chant_navigation_t){.page=PAGE_HOME};
+        action.network=NET_CANCEL_PROVISION; return action;
+    }
+    if (state->page==PAGE_PLAYER) {
+        action.audio=key==KEY_OK ? CHANT_TOGGLE : key==KEY_UP ? CHANT_UP : CHANT_DOWN;
+        return action;
+    }
+    if (state->page==PAGE_WIFI_SCAN && key==KEY_OK) {
+        action.network=NET_SCAN; return action;
+    }
+    if (state->page==PAGE_WIFI_LIST && key==KEY_OK) {
+        action.network=NET_CONNECT_PROFILE; action.profile=(int)state->selection;
+        state->page=PAGE_NETWORK; state->selection=0;
+        return action;
+    }
+    if (state->page==PAGE_VOICE_VOLUME) {
+        action.audio=key==KEY_OK ? CHANT_VOICE_TEST : key==KEY_UP ? CHANT_VOICE_UP : CHANT_VOICE_DOWN;
+        return action;
+    }
+    if (key!=KEY_OK) {
+        unsigned count=state->page==PAGE_HOME ? 5 : state->page==PAGE_MUSIC ? 6 : state->page==PAGE_NETWORK ? 4 :
+                       state->page==PAGE_WIFI_LIST ? (state->items ? state->items : 1) : 1;
+        state->selection=(state->selection+count+(key==KEY_UP ? -1 : 1))%count;
+        state->confirm_forget=false; return action;
+    }
+    if (state->page==PAGE_HOME) {
+        const chant_page_t destinations[]={PAGE_MUSIC,PAGE_WEATHER,PAGE_NETWORK,PAGE_CINDY,PAGE_VOICE_VOLUME};
+        state->page=destinations[state->selection%5]; state->selection=0;
+        /* Every entry refreshes once; the worker ignores it while offline. */
+        if (state->page==PAGE_WEATHER) action.network=NET_REFRESH_WEATHER;
+    } else if (state->page==PAGE_MUSIC) {
+        if (state->selection==5) action.audio=CHANT_SEQUENCE;
+        else { action.audio=CHANT_SELECT_0+state->selection; state->page=PAGE_PLAYER; }
+    } else if (state->page==PAGE_WEATHER) action.network=NET_REFRESH_WEATHER;
+    else if (state->page==PAGE_NETWORK) {
+        if (state->selection==0) action.network=NET_PROVISION;
+        else if (state->selection==1) { state->page=PAGE_WIFI_LIST; state->selection=0; }
+        else if (state->selection==2) { state->page=PAGE_WIFI_SCAN; action.network=NET_SCAN; }
+        else if (state->confirm_forget) { action.network=NET_FORGET; state->confirm_forget=false; }
+        else state->confirm_forget=true;
+    }
+    return action;
+}

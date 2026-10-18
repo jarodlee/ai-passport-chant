@@ -1,0 +1,3 @@
+#pragma once
+#define CHANT_SAMPLE_RATE 11025
+#define CHANT_TOTAL_SAMPLES 5622750u

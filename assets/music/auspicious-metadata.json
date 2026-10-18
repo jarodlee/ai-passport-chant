@@ -1,0 +1,12 @@
+{
+  "name": "auspicious",
+  "title": "消灾吉祥神咒",
+  "source": "https://www.cttbusa.org/recitation/auspicious_mantra.mp3",
+  "sample_rate": 11025,
+  "samples": 844992,
+  "duration_seconds": 76.64326530612244,
+  "codec": "IMA ADPCM; high nibble first; initial predictor/index 0",
+  "original_sha256": "1e32bc433a13d9c26405677e6a36daf413d1efe8cc62367c6724d1bab96ab37b",
+  "adpcm_sha256": "6f9b82a4c2ff9720d7e6aa2aae1afdf8433350f9c73df1c32e9624d2c3e58203",
+  "adpcm_bytes": 422496
+}

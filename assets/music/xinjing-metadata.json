@@ -1,0 +1,12 @@
+{
+  "name": "xinjing",
+  "title": "心经",
+  "source": "https://www.youtube.com/watch?v=j6YKyMu2Kfc",
+  "sample_rate": 11025,
+  "samples": 3371996,
+  "duration_seconds": 305.849977324263,
+  "codec": "IMA ADPCM; high nibble first; initial predictor/index 0",
+  "original_sha256": "b999393e140801347c58be7345c443221435fe5a455053617049be0535430aca",
+  "adpcm_sha256": "099f34da7fa34cdba121c581af9156dbe8d67d0f47a9f83c66f50e8a59c48516",
+  "adpcm_bytes": 1685998
+}

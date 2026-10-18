@@ -1,0 +1,4 @@
+{
+  "oracle": "CPython 3.9 audioop.adpcm2lin; input bytes(range(256))*32; initial state None",
+  "decoded_sha256": "8252d479cf0ad794c2ca5135e79cb735bf9c08110e99fc312efc9777cec7568e"
+}
