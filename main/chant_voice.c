@@ -1,6 +1,11 @@
 #include "chant_voice.h"
 #include "chant_adpcm.h"
+#if __has_include("chant_bridge_local.h")
 #include "chant_bridge_local.h"
+#else
+/* The pairing key is local-only (gitignored); a placeholder keeps the repo buildable. */
+#define CHANT_BRIDGE_KEY "00000000000000000000000000000000"
+#endif
 #include "chant_network.h"
 #include "bsp_audio.h"
 #include "esp_http_client.h"
