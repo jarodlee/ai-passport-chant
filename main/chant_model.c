@@ -1,7 +1,7 @@
 #include "chant_model.h"
 #include "chant_playlist.h"
 void chant_model_init(chant_model_t *s) {
-    *s = (chant_model_t){.volume = 40, .voice_volume = 80, .playing = true};
+    *s = (chant_model_t){.volume = 80, .voice_volume = 80, .track = 4, .playing = true};
 }
 void chant_model_command(chant_model_t *s, chant_command_t command) {
     switch (command) {

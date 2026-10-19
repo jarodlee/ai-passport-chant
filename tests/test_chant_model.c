@@ -3,7 +3,8 @@
 #include <stdio.h>
 int main(void) {
     chant_model_t s; chant_model_init(&s);
-    assert(s.playing && s.volume == 40 && s.voice_volume == 80 && !s.failed);
+    assert(s.playing && s.volume == 80 && s.voice_volume == 80 && !s.failed);
+    assert(s.track == 4 && s.position == 0 && !s.sequence);
     for (int i = 0; i < 5; i++) chant_model_command(&s, CHANT_VOICE_UP);
     assert(s.voice_volume == 100);
     for (int i = 0; i < 20; i++) chant_model_command(&s, CHANT_VOICE_DOWN);
@@ -23,7 +24,7 @@ int main(void) {
     chant_model_command(&s, CHANT_RESTART);
     assert(s.playing && !s.failed && s.position == 0 && s.completed == 0 && s.volume == 0);
     assert(!chant_model_advance(&s, 1, 0));
-    assert(s.track == 0 && !s.sequence);
+    assert(s.track == 4 && !s.sequence);
     chant_model_command(&s, CHANT_SELECT_2);
     assert(s.track == 2 && s.position == 0 && s.playing && !s.failed);
     assert(chant_model_advance(&s, 10, 10) && s.track == 2);

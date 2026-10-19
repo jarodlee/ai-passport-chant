@@ -43,6 +43,26 @@ run_static_checks() {
     PYTHONDONTWRITEBYTECODE=1 python3 tests/test_chant_assets.py
     PYTHONDONTWRITEBYTECODE=1 python3 tests/test_chant_voice_codec.py
     "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Imain \
+        tests/test_chant_voice_endpoint.c main/chant_voice_endpoint.c \
+        -o "${test_dir}/test_chant_voice_endpoint"
+    "${test_dir}/test_chant_voice_endpoint"
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Imain \
+        tests/test_chant_voice_stream.c main/chant_voice_stream.c \
+        -o "${test_dir}/test_chant_voice_stream"
+    "${test_dir}/test_chant_voice_stream"
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Imain \
+        tests/test_chant_voice_control.c main/chant_voice_control.c \
+        -o "${test_dir}/test_chant_voice_control"
+    "${test_dir}/test_chant_voice_control"
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Imain \
+        tests/test_chant_voice_http.c main/chant_voice_http.c \
+        -o "${test_dir}/test_chant_voice_http"
+    "${test_dir}/test_chant_voice_http"
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Itests/voice_http_stubs -Imain \
+        tests/test_chant_voice_session.c main/chant_voice_session.c \
+        -o "${test_dir}/test_chant_voice_session"
+    "${test_dir}/test_chant_voice_session"
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Imain \
         tests/test_demo_navigation.c main/demo_navigation.c \
         -o "${test_dir}/test_demo_navigation"
     "${test_dir}/test_demo_navigation"

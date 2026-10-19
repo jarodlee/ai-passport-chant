@@ -1,5 +1,5 @@
 idf_component_register(
-    SRCS "chant_app.c" "chant_voice.c" "chant_adpcm.c" "chant_model.c" "chant_playlist.c" "chant_network.c" "chant_wifi_profiles.c" "chant_services_model.c" "chant_storage.c" "chant_navigation.c" "chant_settings.c"
+    SRCS "chant_app.c" "chant_voice.c" "chant_voice_endpoint.c" "chant_voice_stream.c" "chant_voice_control.c" "chant_voice_http.c" "chant_voice_session.c" "chant_adpcm.c" "chant_model.c" "chant_playlist.c" "chant_network.c" "chant_wifi_profiles.c" "chant_services_model.c" "chant_storage.c" "chant_navigation.c" "chant_settings.c"
     INCLUDE_DIRS "."
     REQUIRES bsp esp_timer esp_wifi esp_netif esp_event nvs_flash esp_http_server esp_http_client mbedtls json lwip
     EMBED_FILES "../assets/music/dabei.adpcm" "../assets/music/guanyin.adpcm" "../assets/music/auspicious.adpcm" "../assets/music/xinjing.adpcm" "../assets/music/xinjinglong.adpcm"

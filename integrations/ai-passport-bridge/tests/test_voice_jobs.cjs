@@ -1,0 +1,27 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {jsonResponse,uploadAction,markDelivered}=require('../node/voice-jobs.cjs');
+const at=10000,ip='127.0.0.1';
+const job={time:at,state:'thinking',ip,requestId:'0123456789abcdef'};
+const fresh={id:'fedcba9876543210',ip,replaceReady:true};
+assert.equal(uploadAction(null,fresh,at),'new');
+assert.equal(uploadAction(job,fresh,at),'busy');
+assert.equal(uploadAction(job,{...fresh,id:job.requestId},at),'replay');
+assert.equal(uploadAction(job,{...fresh,id:job.requestId,ip:'192.168.1.4'},at),'busy');
+assert.equal(uploadAction({...job,time:0},fresh,150001),'new');
+assert.equal(uploadAction({...job,state:'error'},fresh,at),'new');
+assert.equal(uploadAction({...job,state:'ready'},fresh,at),'new');
+assert.equal(uploadAction({...job,state:'ready'},{...fresh,replaceReady:false},at),'busy');
+assert.equal(uploadAction({...job,state:'ready'},{...fresh,ip:'192.168.1.4'},at),'busy');
+const finished={...job,state:'ready'};markDelivered(finished);
+assert(finished.time>0&&finished.delivered);
+assert.equal(uploadAction(finished,{...fresh,replaceReady:false}),'new');
+assert.equal(uploadAction(finished,{...fresh,id:job.requestId}),'replay');
+assert.equal(finished.state,'ready'); // Audio remains available for a retry.
+let headers,bytes;
+jsonResponse({writeHead:(status,h)=>{assert.equal(status,202);headers=h;},end:b=>bytes=b},202,{jobId:job.requestId});
+assert.equal(headers['Content-Length'],28);
+assert.equal(headers['Content-Length'],bytes.length);
+assert.deepEqual(JSON.parse(bytes),{jobId:job.requestId});
+assert.equal(headers['Transfer-Encoding'],undefined);
+console.log('Voice jobs: idempotent retry, terminal-job recovery, active-job isolation and fixed-length JSON PASS');

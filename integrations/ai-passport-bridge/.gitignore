@@ -1,0 +1,5 @@
+/pairing.json
+/*.cindy
+/native/whisper-cli
+/native/ggml-*.bin
+__pycache__/

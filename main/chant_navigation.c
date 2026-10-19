@@ -30,7 +30,7 @@ chant_action_t chant_navigate(chant_navigation_t *state, chant_key_t key) {
         state->confirm_forget=false; return action;
     }
     if (state->page==PAGE_HOME) {
-        const chant_page_t destinations[]={PAGE_MUSIC,PAGE_WEATHER,PAGE_NETWORK,PAGE_CINDY,PAGE_VOICE_VOLUME};
+        const chant_page_t destinations[]={PAGE_CINDY,PAGE_MUSIC,PAGE_WEATHER,PAGE_NETWORK,PAGE_VOICE_VOLUME};
         state->page=destinations[state->selection%5]; state->selection=0;
         /* Every entry refreshes once; the worker ignores it while offline. */
         if (state->page==PAGE_WEATHER) action.network=NET_REFRESH_WEATHER;

@@ -11,10 +11,10 @@ int main(void) {
     a=chant_navigate(&n,KEY_DOWN); assert(a.audio==CHANT_VOICE_DOWN);
     a=chant_navigate(&n,KEY_OK); assert(a.audio==CHANT_VOICE_TEST);
     a=chant_navigate(&n,KEY_BACK); assert(n.page==PAGE_HOME);
-    chant_navigate(&n,KEY_DOWN); chant_navigate(&n,KEY_DOWN); chant_navigate(&n,KEY_DOWN); chant_navigate(&n,KEY_OK); assert(n.page==PAGE_CINDY);
+    chant_navigate(&n,KEY_OK); assert(n.page==PAGE_CINDY);
     a=chant_navigate(&n,KEY_OK); assert(a.audio==-1 && a.network==-1);
     a=chant_navigate(&n,KEY_BACK); assert(n.page==PAGE_HOME && a.network==NET_CANCEL_PROVISION);
-    chant_navigate(&n,KEY_OK); assert(n.page==PAGE_MUSIC);
+    chant_navigate(&n,KEY_DOWN); chant_navigate(&n,KEY_OK); assert(n.page==PAGE_MUSIC);
     chant_navigate(&n,KEY_UP); a=chant_navigate(&n,KEY_OK);
     assert(a.audio==CHANT_SEQUENCE && n.page==PAGE_MUSIC);
     chant_navigate(&n,KEY_UP); a=chant_navigate(&n,KEY_OK);
@@ -22,11 +22,11 @@ int main(void) {
     a=chant_navigate(&n,KEY_UP); assert(a.audio==CHANT_UP);
     a=chant_navigate(&n,KEY_OK); assert(a.audio==CHANT_TOGGLE);
     chant_navigate(&n,KEY_BACK);
-    chant_navigate(&n,KEY_DOWN); a=chant_navigate(&n,KEY_OK);
+    chant_navigate(&n,KEY_DOWN); chant_navigate(&n,KEY_DOWN); a=chant_navigate(&n,KEY_OK);
     assert(n.page==PAGE_WEATHER && a.network==NET_REFRESH_WEATHER);
     a=chant_navigate(&n,KEY_OK); assert(a.network==NET_REFRESH_WEATHER);
     chant_navigate(&n,KEY_BACK);
-    chant_navigate(&n,KEY_DOWN); chant_navigate(&n,KEY_DOWN); chant_navigate(&n,KEY_OK);
+    chant_navigate(&n,KEY_DOWN); chant_navigate(&n,KEY_DOWN); chant_navigate(&n,KEY_DOWN); chant_navigate(&n,KEY_OK);
     assert(n.page==PAGE_NETWORK);
     a=chant_navigate(&n,KEY_OK); assert(a.network==NET_PROVISION);
     chant_navigate(&n,KEY_UP); a=chant_navigate(&n,KEY_OK);

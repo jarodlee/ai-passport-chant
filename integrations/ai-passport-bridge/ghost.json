@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 3,
+  "minCindyVersion": "0.1.110",
+  "id": "ai-passport-bridge",
+  "name": "AI Passport 语音桥接",
+  "description": "让 AI Passport 按住说话向 Cindy 提问，知识问答先查询公开网络信息再回答，并通过局域网或配套 HTTPS 入口播报回复。",
+  "whenToUse": "让 AI Passport 按住说话向 Cindy 提问，知识问答先查询公开网络信息再回答，并通过局域网或配套 HTTPS 入口播报回复。",
+  "version": "1.6.0",
+  "kind": "chip",
+  "entry": "main.js",
+  "icon": "assets/icon.png",
+  "tools": [
+    {
+      "name": "status",
+      "description": "启动、查看或停止 AI Passport 局域网语音服务。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "stop": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "test_text",
+      "description": "向本机 Cindy 提问，检验语音桥接使用的回答通道。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "diagnostics",
+      "description": "检查本插件独立语音对话任务的状态，供联调使用。",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "voice_model",
+      "description": "查看或切换语音对话任务使用的模型；不传参数列出已启用模型，传 model 切换。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "模型 id，例如 deepseek-v4-flash"
+          }
+        }
+      }
+    }
+  ],
+  "node": {
+    "entry": "node/worker.cjs",
+    "protocol": "json-rpc-stdio",
+    "lifecycle": "resident"
+  },
+  "launch": "resident",
+  "command": "护照对话",
+  "panel": {
+    "title": "AI Passport 语音服务",
+    "html": "panel.html",
+    "position": "tab"
+  },
+  "agent": {
+    "tasks": true
+  }
+}

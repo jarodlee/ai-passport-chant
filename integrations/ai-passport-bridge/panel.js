@@ -1,0 +1,6 @@
+
+const bus=new BroadcastChannel('passport-bridge-control'),pending=new Map();
+bus.onmessage=({data:d})=>{if(d.type!=='response'||!pending.has(d.reqId))return;const p=pending.get(d.reqId);clearInterval(p.timer);clearTimeout(p.timeout);pending.delete(d.reqId);const r=d.response,s=r.result;document.querySelector('#state').textContent=r.ok?(s.running?'语音服务已启动':'语音服务已停止'):'服务连接失败';document.querySelector('#detail').textContent=r.ok?('本机地址：'+s.addresses.join(' / ')+' · 当前状态：'+s.state):(r.message||'请启用插件后重试');};
+async function request(method){await fetch('cindy-ghost://ai-passport-bridge/wake');const reqId=crypto.randomUUID(),send=()=>bus.postMessage({type:'request',reqId,method});let timer=setInterval(send,400),timeout=setTimeout(()=>{clearInterval(timer);pending.delete(reqId);document.querySelector('#state').textContent='连接超时，请启用插件后重试';},12000);pending.set(reqId,{timer,timeout});send();}
+document.querySelectorAll('button').forEach(b=>b.onclick=()=>request(b.dataset.method));request('status');
+let scrollTimer;addEventListener('scroll',()=>{document.documentElement.classList.add('is-scrolling');clearTimeout(scrollTimer);scrollTimer=setTimeout(()=>document.documentElement.classList.remove('is-scrolling'),2000)});

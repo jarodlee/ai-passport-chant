@@ -194,8 +194,8 @@ static void render(const chant_model_t *audio, const chant_network_state_t *net,
     char top_buf[64];
     switch (navigation.page) {
         case PAGE_HOME: {
-            const char *items[]={"佛音曲库","安庆天气","连接Wi-Fi","Cindy对话","语音音量"};
-            snprintf(text,sizeof(text),"%s\n%s\n%s\nNFC: 手机靠近识别",weather,
+            const char *items[]={"Cindy对话","佛音曲库","安庆天气","连接Wi-Fi","语音音量"};
+            snprintf(text,sizeof(text),"%s\n%s\n%s\n手机顶部靠近背部标签",weather,
                 chant_tracks[audio->track].title,playing);
             snprintf(menu_text,sizeof(menu_text),"▶ %s ◀",items[selection]);
             menu=menu_text;
@@ -295,7 +295,7 @@ static void render(const chant_model_t *audio, const chant_network_state_t *net,
         default: {
             title="Cindy对话";
             show_reply=chant_voice_reply(&reply_pixels,&reply_serial);
-            snprintf(text,sizeof(text),"%s\n\n%s\nMac与设备需在同一网络",net_text(net->status),chant_voice_status());
+            snprintf(text,sizeof(text),"%s\n\n%s",net_text(net->status),chant_voice_status());
             footer=show_reply ? "按住再问 上键返回" : "按住确定说话 上键返回";
             break;
         }
@@ -386,7 +386,7 @@ static void audio_worker(void *arg) {
             fade_in=true; last_feed=0; last_snapshot=0;
         }
         if (chant_voice_requested()) {
-            chant_voice_run(state.voice_volume);
+            do { chant_voice_run(state.voice_volume); } while (chant_voice_requested());
             state.failed=audio_open(state.volume)!=ESP_OK;
             fade_in=true; last_feed=0; last_snapshot=0;
         }
