@@ -54,7 +54,7 @@
 - 参考 cindy 仓库文档组织完善索引：新增 `docs/README.md` 根总索引；AGENTS.md 规则索引按触发场景改写（附触发条件）；`docs/contribution/` 与 `docs/development/` 的 README 补充收录标准。
 - 引入社区治理文档（参照 cindy 改写，放仓库根目录）：新增 `CONTRIBUTING.md` / `.zh_CN.md`（贡献指南，针对 ESP-IDF/AI agent/fork 场景改写）、`CODE_OF_CONDUCT.md` / `.zh_CN.md`（贡献者公约）、`SECURITY.md` / `.zh_CN.md`（安全报告流程）、`SUPPORT.md` / `.zh_CN.md`（支持渠道）；AGENTS.md 与 docs/README.md 同步引用。
 
-## v1.0.0-chant - 2026-10-20
+## v1.0.1-chant - 2026-10-20
 
 - 首次发布佛音播放器公开固件：五首离线录音，默认《心经长版》及 80% 音量，二维码、Wi-Fi 扫描快捷入口及图标、常用网络及配网、安庆天气和主页时间。
 - Cindy 按住说话、打断重问、回复缓冲、独立语音音量及远程上传失败恢复；私有桥接配对需另行配置。

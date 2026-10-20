@@ -1,4 +1,5 @@
 build/
+/release-artifacts/
 sdkconfig
 sdkconfig.old
 managed_components/

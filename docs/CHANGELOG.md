@@ -57,7 +57,7 @@
 - Added the documentation catalog and task-triggered routing based on the earlier repository model.
 - Added bilingual contribution, code-of-conduct, security, and support documents tailored to this ESP-IDF and fork workflow.
 
-## v1.0.0-chant - 2026-10-20
+## v1.0.1-chant - 2026-10-20
 
 - First public chant-player firmware: five offline recordings, long Heart Sutra autoplay at 80%, QR display, Wi-Fi scan shortcut and icon, saved networks and provisioning, Anqing weather and home time.
 - Cindy push-to-talk, interrupt-and-ask, buffered replies, independent speech volume and remote upload recovery. Private bridge pairing remains a separate setup.

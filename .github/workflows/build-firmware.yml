@@ -41,8 +41,11 @@ jobs:
           command: ./tools/validate.sh
 
       - name: Checksum public firmware
-        working-directory: build
-        run: sha256sum FoloToy-AI-Passport-full.bin > SHA256SUMS
+        run: |
+          mkdir -p release-artifacts
+          cp build/FoloToy-AI-Passport-full.bin release-artifacts/
+          cd release-artifacts
+          sha256sum FoloToy-AI-Passport-full.bin > SHA256SUMS
 
       - name: Set artifact name
         id: artifact_name
@@ -53,8 +56,8 @@ jobs:
         with:
           name: ${{ steps.artifact_name.outputs.name }}
           path: |
-            build/FoloToy-AI-Passport-full.bin
-            build/SHA256SUMS
+            release-artifacts/FoloToy-AI-Passport-full.bin
+            release-artifacts/SHA256SUMS
           if-no-files-found: error
 
   release:

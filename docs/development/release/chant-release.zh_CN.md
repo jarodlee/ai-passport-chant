@@ -1,6 +1,6 @@
-[English](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.0-chant/docs/development/release/chant-release.md)
+[English](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.1-chant/docs/development/release/chant-release.md)
 
-# v1.0.0-chant — AI Passport 佛音播放器
+# v1.0.1-chant — AI Passport 佛音播放器
 
 首个公开固件版本，适用于 FoloToy AI Passport（ESP32-C3、8 MB Flash）。
 
@@ -18,7 +18,7 @@
 可运行 `./tools/validate.sh --firmware`。下载固件来自干净的 GitHub 源码构建，
 不含用户 Wi-Fi 密码、私有配对密钥及远程桥接地址。刷入后需自行配网。
 Cindy 对话需另行准备桥接，并构建使用匹配私有密钥的设备固件；公开占位密钥不构成可用配对。
-详见[桥接配置说明](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.0-chant/docs/development/chant-bridge-source.zh_CN.md)。
+详见[桥接配置说明](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.1-chant/docs/development/chant-bridge-source.zh_CN.md)。
 仓库包含桥接 1.6 的先检索后回答源码，但该版本尚未完成真机验收。
 
 ## 刷写与使用
@@ -38,5 +38,5 @@ Linux 运行 `sha256sum -c SHA256SUMS`，macOS 运行 `shasum -a 256 -c SHA256SU
 发布流水线执行完整的主机测试、静态检查及固件构建，校验合并镜像后才发布。
 此公开配置尚未刷机实测；相关本机私有配置已通过启动及语音检查。
 LCD 显示二维码后的手机扫码、长期弱网运行仍待验证。录音来源和权利说明见
-[素材文档](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.0-chant/assets/README.zh_CN.md)；
+[素材文档](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.1-chant/assets/README.zh_CN.md)；
 代码许可证不授予第三方录音的版权许可。

@@ -1,6 +1,6 @@
-[简体中文](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.0-chant/docs/development/release/chant-release.zh_CN.md)
+[简体中文](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.1-chant/docs/development/release/chant-release.zh_CN.md)
 
-# v1.0.0-chant — AI Passport Chant Player
+# v1.0.1-chant — AI Passport Chant Player
 
 First public firmware release for FoloToy AI Passport (ESP32-C3, 8 MB Flash).
 
@@ -20,7 +20,7 @@ The downloadable image is built from a clean GitHub checkout. It contains no
 owner Wi-Fi passwords, private pairing key or remote bridge origin. Configure
 Wi-Fi after flashing. Cindy needs a separately prepared bridge and a matching
 private firmware build; the public placeholder key is not an active pairing.
-See the [bridge setup](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.0-chant/docs/development/chant-bridge-source.md).
+See the [bridge setup](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.1-chant/docs/development/chant-bridge-source.md).
 The bridge 1.6 search-first source is included but has not passed live-device acceptance.
 
 ## Flash and use
@@ -43,5 +43,5 @@ The release pipeline runs the complete host/static/build gate and verifies the
 merged image before publishing. This clean public variant is not hardware-tested;
 the related personalized build has passed startup and voice checks. Phone scanning
 of the QR on the LCD and weak-network endurance remain unverified. Audio source
-attribution and rights are recorded in the [asset guide](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.0-chant/assets/README.md);
+attribution and rights are recorded in the [asset guide](https://github.com/jarodlee/ai-passport-chant/blob/v1.0.1-chant/assets/README.md);
 the code license does not grant rights to third-party recordings.
