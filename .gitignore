@@ -15,5 +15,7 @@ managed_components/
 /main/chant_bridge_local.h
 
 /main/chant_wifi_local.h
+/main/chant_qr_local.h
+/assets/images/chant-qr-local*
 
 /core

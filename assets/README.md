@@ -18,6 +18,9 @@ the body inventory in `fonts/chant-glyphs.txt` (18 px) and the title-only
 inventory in `fonts/chant-title-glyphs.txt` (28 px). Generate with
 `python3 tools/generate_chant_fonts.py` (Pillow/FreeType required). The generator
 verifies bitmap pixel readback; the static gate checks actual application glyph coverage.
+Large-font headings and home labels are collected from application source, not
+from a separate manual title list. The scan-page Wi-Fi icon is drawn as arcs
+and a dot on its own widget; it needs no image or additional icon font.
 
 Store reusable font files and generated font sources in `fonts/`.
 
@@ -27,6 +30,15 @@ Store reusable font files and generated font sources in `fonts/`.
 - Do not commit fonts whose license does not permit redistribution.
 
 ## Images
+
+The chant QR display accepts an owner-supplied local image. Keep its original
+and verified preview as `images/chant-qr-local*` (Git-ignored), with no public
+redistribution license assumed. `tools/prepare_chant_qr.py` uses OpenCV to decode
+and re-encode the same destination, retaining a four-module quiet zone and integer
+scaling. It generates ignored `main/chant_qr_local.h`, a flash-resident I1 bitmap
+with an eight-byte black/white palette. The supplied image produces a 196 square
+pixel asset (4,908 bytes). The QR, its destination and paired firmware are local
+deployment material and must not enter public commits.
 
 Store reusable source images and generated display assets in `images/`.
 

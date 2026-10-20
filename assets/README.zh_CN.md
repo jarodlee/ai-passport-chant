@@ -15,6 +15,8 @@
 `fonts/chant-glyphs.txt` 中的正文字符（18 px），标题字体（28 px）仅包含
 `fonts/chant-title-glyphs.txt` 中的标题字符。执行 `python3 tools/generate_chant_fonts.py`
 生成（需 Pillow/FreeType）；生成器逐像素回读检查，静态门禁检查应用实际文字覆盖。
+大号字体标题和主页菜单名称由应用源码提取，不再依赖单独手工维护的标题清单。
+扫描页的 Wi-Fi 图标通过独立控件绘制弧线和圆点，不需要图片或额外图标字体。
 
 可复用的字库文件与生成的字库源码放在 `fonts/`。
 
@@ -24,6 +26,13 @@
 - 不提交许可不允许分发的字库。
 
 ## 图片（images）
+
+唱诵应用二维码页使用用户提供的本地图片，原图和验证预览保存为
+`images/chant-qr-local*`，由 Git 忽略，不假定具有公开再分发许可。
+`tools/prepare_chant_qr.py` 用 OpenCV 解码并重新编码相同目标，保留四模块白边、
+采用整数倍像素缩放，生成被忽略的 `main/chant_qr_local.h`，以带八字节黑白调色板
+的 I1 位图保存在 Flash。本次图片为 196 像素方图、4,908 字节。二维码、目标和
+配套本地固件不进入公开提交。
 
 可复用的源图与生成的显示资产放在 `images/`。
 

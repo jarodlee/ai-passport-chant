@@ -8,7 +8,11 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 source = "".join(p.read_text() for p in (ROOT / "main").glob("chant_*.c"))
 body_chars = sorted(set(chr(i) for i in range(32, 127)) | set(re.findall(r"[\u3400-\u9fff]", source)))
-title_text='安心听佛音曲库安庆天气连接Wi-FiCindy对话语音音量▶◀' + ''.join(json.loads(p.read_text())['title'] for p in (ROOT/'assets/music').glob('*-metadata.json'))
+# Derive the large-font inventory from actual headings and home labels, rather
+# than a hand-maintained list that can silently omit a newly added page title.
+title_text='▶◀' + ''.join(re.findall(r'\btitle\s*=\s*"([^"]*)"',source))
+title_text+=''.join(re.findall(r'\{"([^"]+)",PAGE_',source))
+title_text+=''.join(json.loads(p.read_text())['title'] for p in (ROOT/'assets/music').glob('*-metadata.json'))
 title_chars=sorted(set(chr(i) for i in range(32,127)) | set(title_text))
 (ROOT / "main/chant_font_inventory.h").write_text('#pragma once\n' +
     '#define CHANT_UI_INVENTORY "' + ''.join(c for c in body_chars if ord(c)>127) + ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:/ .->"\n' +

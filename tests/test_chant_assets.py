@@ -40,6 +40,10 @@ for size in (18,28):
     offsets=re.search(r'unicode_list\[\] = \{([^}]+)\}',font).group(1)
     glyphs={chr(int(n)+32) for n in offsets.split(',')}
     expected = required if size==18 else set((root/'assets/fonts/chant-title-glyphs.txt').read_text().strip())
+    if size==28:
+        actual_titles=''.join(re.findall(r'\btitle\s*=\s*"([^"]*)"',source))
+        actual_titles+=''.join(re.findall(r'\{"([^"]+)",PAGE_',source))
+        expected |= set(actual_titles)
     assert expected <= glyphs
     assert set(chr(i) for i in range(32,127)) <= glyphs
     assert '\u9f98' not in glyphs

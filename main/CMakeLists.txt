@@ -5,5 +5,6 @@ idf_component_register(
     EMBED_FILES "../assets/music/dabei.adpcm" "../assets/music/guanyin.adpcm" "../assets/music/auspicious.adpcm" "../assets/music/xinjing.adpcm" "../assets/music/xinjinglong.adpcm"
 )
 target_sources(${COMPONENT_LIB} PRIVATE
+    "chant_qr_image.c"
     "${CMAKE_CURRENT_LIST_DIR}/../assets/fonts/chant_font_18.c"
     "${CMAKE_CURRENT_LIST_DIR}/../assets/fonts/chant_font_28.c")

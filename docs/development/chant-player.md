@@ -17,8 +17,8 @@ Cindy reply volume is stored separately and survives reboot.
 ## Pages and controls
 
 - Home: the top line shows the connected Wi-Fi SSID and the next line shows
-  local date/time (CST, `--` before SNTP sync). UP/DOWN select Cindy, Music, Anqing
-  Weather, Wi-Fi, or Voice volume; the selected entry is drawn in the
+  local date/time (CST, `--` before SNTP sync). UP/DOWN select Wi-Fi scan, QR code,
+  Music, Anqing Weather, Wi-Fi, Voice volume, or Cindy; the selected entry is drawn in the
   large title font between ▶ and ◀.
 - Music: UP/DOWN choose a track or single/playlist repeat; OK selects it.
 - Player: OK pauses/resumes; UP/DOWN change music volume by 5%, bounded to 0–90%.
@@ -152,7 +152,7 @@ verified by hash. Wi-Fi profiles and the voice volume survived in `nvs`.
 
 ## Push-to-talk Cindy bridge (v3)
 
-Cindy is the first Home entry. During a spoken reply, pressing OK interrupts playback and retains the new press; recording starts after the bounded audio download task exits, without reopening the music codec in between. The HTTP body read timeout is 250 ms and transient EAGAIN results are retried. Old-job network cleanup is deferred until after the next recording, so it does not delay opening the microphone. The current route lookup and initial TLS setup can still take longer if interrupted before playback begins; the short body timeout applies after response headers. UP cancels both the current exchange and any queued recording. The Cindy page no longer says that both devices must share a network. Hold OK until recording appears, speak for up to eight seconds, release to send; UP returns after the transaction. Music pauses during the exchange and resumes at the same position. A short recording is rejected. Status text uses the fixed subset, while each reply is also drawn from a bitmap
+Cindy is the last Home entry. During a spoken reply, pressing OK interrupts playback and retains the new press; recording starts after the bounded audio download task exits, without reopening the music codec in between. The HTTP body read timeout is 250 ms and transient EAGAIN results are retried. Old-job network cleanup is deferred until after the next recording, so it does not delay opening the microphone. The current route lookup and initial TLS setup can still take longer if interrupted before playback begins; the short body timeout applies after response headers. UP cancels both the current exchange and any queued recording. The Cindy page no longer says that both devices must share a network. Hold OK until recording appears, speak for up to eight seconds, release to send; UP returns after the transaction. Music pauses during the exchange and resumes at the same position. A short recording is rejected. Status text uses the fixed subset, while each reply is also drawn from a bitmap
 rendered on the Mac and served at `/v1/jobs/<id>/text`. The Mac normalizes the
 Tingting PCM peak before sending it, and the device applies the stored voice
 volume when playing replies.
@@ -162,6 +162,41 @@ The paired, local-only `ai-passport-bridge` package uses bundled ARM64 whisper.c
 A random per-build pairing key lives in ignored `main/chant_bridge_local.h` and the private plugin `pairing.json`; never commit or publish either, or share the paired binaries/package. UDP challenge/response uses HMAC-SHA256. HTTP requires the pairing key, private IPv4 peers, bounded request bodies and one active job. LAN HTTP is unencrypted and assumes a trusted network. The microphone is opened only after an explicit held button, records at most 64 KB IMA ADPCM, and is owned by the audio worker. New firmware requests `audio/x-passport-ima-adpcm` at the existing `/audio` endpoint. Bridge v1.4 returns a 12-byte PVA1 header (magic, LE32 16000 Hz, LE32 sample count) followed by mono IMA ADPCM (zero predictor/index, high nibble first), up to 90 seconds. This reduces speech transfer size to roughly one quarter of PCM. A network-only producer feeds a 24 KiB compressed queue; the audio owner prebuffers 16 KiB (about two seconds), then decodes into 512-sample PCM chunks. On an underrun it refills before resuming. Cancellation joins the producer before freeing its queue. Header, length and duration checks reject truncated or mismatched audio. Old firmware omitting this Accept header still receives PCM. A bridge update alone therefore enables search, while the playback improvement requires the matching firmware. The bridge restarts its 150-second ready-job retention after synthesis. Weather refresh is deferred during a transaction; NVS writes still require audio quiescence or fail closed.
 
 The temporary provisioning hotspot is now open (no password), still limited to one client and ten minutes. This local firmware includes a private, ignored first-connect configuration; it saves the chosen network after successful connection and preserves a setup marker when forgetting a network, so forgetting does not silently restore the preset. Never publish this local firmware or its credential header.
+
+## Offline QR display and home shortcuts
+
+The home order is Wi-Fi scan, QR code, music library, Anqing weather, Wi-Fi
+connection, voice volume, and Cindy conversation. The first item opens the existing
+scan page and immediately requests a scan; OK rescans. The network submenu also
+retains its scan shortcut. Moving up from the first home item reaches Cindy.
+
+The scan header draws a Wi-Fi icon (three arcs and a dot) beside its scan title,
+without an icon font or a bitmap. Its widget is hidden on other pages. Large-font generation
+now derives headings and home labels from the application source, and host tests
+compare those strings with the generated glyph map. This fixes the four missing
+glyph boxes previously shown by the scan page and covers the saved-network title
+as well. Changing the text encoding or hiding font placeholders is not used as a
+workaround. Drawing the icon avoids linking a whole font for one symbol.
+
+The QR page displays a local black-on-white I1 image without networking. Long
+press OK or double-click UP to return home; ordinary keys do not start a voice
+transaction or change playback. The title moves above the image and the reply
+canvas/body are hidden. The bitmap preserves four quiet modules, uses integer
+scaling, and fits within 224 square pixels between the title and footer.
+
+Prepare a private image with `python3 tools/prepare_chant_qr.py /path/to/qr.jpg`
+(OpenCV with QR encoder support is required). The tool decodes the source,
+re-encodes its exact destination without the decorative logo, and verifies the
+packed display bitmap decodes to the same value. It never prints that value.
+The supplied image produces a 196-pixel square and 4,908 bytes of indexed data.
+Its source/preview `assets/images/chant-qr-local*` and generated
+`main/chant_qr_local.h` are Git-ignored. A public checkout without that header
+still builds and shows an unconfigured message. Do not publish the private QR
+image or firmware containing it. The feature does not rewrite the NFC tag.
+
+Host navigation and bitmap decoding do not validate LCD scanning. Device checks
+must cover phone scanning, title/battery/footer clearance, returning to other
+pages without a leftover image, Chinese glyphs, and scan-on-entry behavior.
 
 ## Recovering from voice upload failures
 

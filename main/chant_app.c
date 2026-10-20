@@ -2,6 +2,7 @@
 #include "chant_voice.h"
 #include "chant_model.h"
 #include "chant_navigation.h"
+#include "chant_qr_image.h"
 #include "chant_playlist.h"
 #include "chant_network.h"
 #include "chant_storage.h"
@@ -29,7 +30,7 @@ static const char *TAG = "chant_player";
 static QueueHandle_t commands, snapshots;
 typedef struct { bsp_btn_t button; bsp_btn_ev_t event; } key_event_t;
 static QueueHandle_t keys;
-static lv_obj_t *heading, *body, *hint, *battery_label, *menu_label, *reply_canvas, *top_label;
+static lv_obj_t *heading, *body, *hint, *battery_label, *menu_label, *reply_canvas, *top_label, *qr_image, *wifi_icon;
 static unsigned shown_reply_serial;
 static bool canvas_ready;
 static uint8_t initial_voice_volume = 80;
@@ -69,6 +70,28 @@ static bool check_font(const lv_font_t *font, const char *p) {
     lv_font_glyph_dsc_t negative={0};
     return !lv_font_get_glyph_dsc(font,&negative,0x9F98,0) || negative.is_placeholder;
 }
+/* Draw the familiar three Wi-Fi arcs and dot without linking a whole icon font. */
+static void draw_wifi_icon(lv_event_t *event) {
+    lv_area_t box;
+    lv_obj_get_coords(lv_event_get_target_obj(event),&box);
+    lv_layer_t *layer=lv_event_get_layer(event);
+    lv_draw_arc_dsc_t arc;
+    lv_draw_arc_dsc_init(&arc);
+    arc.color=lv_color_hex(0xEFE6D2);
+    arc.width=3; arc.rounded=1;
+    arc.start_angle=225; arc.end_angle=315;
+    arc.center=(lv_point_t){box.x1+20,box.y1+30};
+    const uint16_t radii[]={24,16,8};
+    for (unsigned i=0;i<3;i++) {
+        arc.radius=radii[i];
+        lv_draw_arc(layer,&arc);
+    }
+    lv_draw_rect_dsc_t dot;
+    lv_draw_rect_dsc_init(&dot);
+    dot.bg_color=arc.color; dot.radius=LV_RADIUS_CIRCLE;
+    lv_area_t area={arc.center.x-2,arc.center.y-2,arc.center.x+2,arc.center.y+2};
+    lv_draw_rect(layer,&dot,&area);
+}
 static void build_screen(void) {
     lv_obj_t *screen=lv_obj_create(NULL);
     lv_obj_set_style_bg_color(screen,lv_color_hex(0x162A26),0);
@@ -82,6 +105,13 @@ static void build_screen(void) {
     lv_obj_set_pos(top_label,8,4);
     lv_obj_add_flag(top_label,LV_OBJ_FLAG_HIDDEN);
     heading=label(screen,"安心听",52,&chant_font_28);
+    wifi_icon=lv_obj_create(screen);
+    lv_obj_remove_style_all(wifi_icon);
+    lv_obj_remove_flag(wifi_icon,LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_set_size(wifi_icon,40,34);
+    lv_obj_align(wifi_icon,LV_ALIGN_TOP_LEFT,18,52);
+    lv_obj_add_event_cb(wifi_icon,draw_wifi_icon,LV_EVENT_DRAW_MAIN,NULL);
+    lv_obj_add_flag(wifi_icon,LV_OBJ_FLAG_HIDDEN);
     body=label(screen,"准备中",90,&chant_font_18);
     lv_obj_set_height(body,186);
     menu_label=label(screen,"",186,&chant_font_28);
@@ -95,6 +125,13 @@ static void build_screen(void) {
     lv_obj_set_style_border_opa(reply_canvas,LV_OPA_COVER,0);
     lv_obj_set_style_pad_all(reply_canvas,0,0);
     lv_obj_add_flag(reply_canvas,LV_OBJ_FLAG_HIDDEN);
+    qr_image=lv_image_create(screen);
+    const lv_image_dsc_t *qr=chant_qr_image();
+    if (qr) {
+        lv_image_set_src(qr_image,qr);
+        lv_obj_align(qr_image,LV_ALIGN_TOP_MID,0,48+(224-qr->header.h)/2);
+    }
+    lv_obj_add_flag(qr_image,LV_OBJ_FLAG_HIDDEN);
     hint=label(screen,"上下选择 确定进入",276,&chant_font_18);
     battery_label=label(screen,"--%",8,&chant_font_18);
     lv_obj_set_width(battery_label,52);
@@ -194,10 +231,9 @@ static void render(const chant_model_t *audio, const chant_network_state_t *net,
     char top_buf[64];
     switch (navigation.page) {
         case PAGE_HOME: {
-            const char *items[]={"Cindy对话","佛音曲库","安庆天气","连接Wi-Fi","语音音量"};
             snprintf(text,sizeof(text),"%s\n%s\n%s\n手机顶部靠近背部标签",weather,
                 chant_tracks[audio->track].title,playing);
-            snprintf(menu_text,sizeof(menu_text),"▶ %s ◀",items[selection]);
+            snprintf(menu_text,sizeof(menu_text),"▶ %s ◀",chant_home_title(selection));
             menu=menu_text;
             char ssid[15], when[24]="--";
             display_ssid(ssid,sizeof(ssid),net->ssid);
@@ -257,7 +293,7 @@ static void render(const chant_model_t *audio, const chant_network_state_t *net,
             break;
         }
         case PAGE_WIFI_SCAN: {
-            title="周边网络";
+            title="扫描Wi-Fi";
             if (net->scanning) snprintf(text,sizeof(text),"正在扫描...\n请稍候");
             else if (net->scan_error) snprintf(text,sizeof(text),"扫描失败\n\n确定重新扫描");
             else if (!net->scan_count) snprintf(text,sizeof(text),"未发现附近网络\n\n确定重新扫描");
@@ -288,6 +324,11 @@ static void render(const chant_model_t *audio, const chant_network_state_t *net,
             footer="上下选择 确定连接";
             break;
         }
+        case PAGE_QR:
+            title="二维码";
+            snprintf(text,sizeof(text),"%s",chant_qr_image()?"":"未设置二维码");
+            footer="手机扫码 长按确定返回";
+            break;
         case PAGE_VOICE_VOLUME:
             title="语音音量";
             snprintf(text,sizeof(text),"Cindy回复音量\n\n▶ %u%% ◀\n\n上下每次十个百分点\n确定试听",audio->voice_volume);
@@ -301,6 +342,14 @@ static void render(const chant_model_t *audio, const chant_network_state_t *net,
         }
     }
     /* The bitmap belongs to the Cindy page only; every other page must show the label. */
+    bool show_qr=navigation.page==PAGE_QR && chant_qr_image()!=NULL;
+    if (show_qr) lv_obj_remove_flag(qr_image,LV_OBJ_FLAG_HIDDEN);
+    else lv_obj_add_flag(qr_image,LV_OBJ_FLAG_HIDDEN);
+    bool show_wifi=navigation.page==PAGE_WIFI_SCAN;
+    if (show_wifi) lv_obj_remove_flag(wifi_icon,LV_OBJ_FLAG_HIDDEN);
+    else lv_obj_add_flag(wifi_icon,LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_width(heading,show_wifi?170:212);
+    lv_obj_align(heading,LV_ALIGN_TOP_MID,show_wifi?20:0,navigation.page==PAGE_QR?8:52);
     if (show_reply) {
         if (!canvas_ready || reply_serial!=shown_reply_serial) {
             lv_canvas_set_buffer(reply_canvas,(void*)reply_pixels,CHANT_REPLY_WIDTH,CHANT_REPLY_HEIGHT,LV_COLOR_FORMAT_I1);
@@ -313,7 +362,8 @@ static void render(const chant_model_t *audio, const chant_network_state_t *net,
         lv_obj_add_flag(body,LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_obj_add_flag(reply_canvas,LV_OBJ_FLAG_HIDDEN);
-        lv_obj_remove_flag(body,LV_OBJ_FLAG_HIDDEN);
+        if (show_qr) lv_obj_add_flag(body,LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_remove_flag(body,LV_OBJ_FLAG_HIDDEN);
     }
     if (top_text) {
         if (strcmp(lv_label_get_text(top_label),top_text)) lv_label_set_text(top_label,top_text);
