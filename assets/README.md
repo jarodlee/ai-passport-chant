@@ -31,14 +31,16 @@ Store reusable font files and generated font sources in `fonts/`.
 
 ## Images
 
-The chant QR display accepts an owner-supplied local image. Keep its original
-and verified preview as `images/chant-qr-local*` (Git-ignored), with no public
-redistribution license assumed. `tools/prepare_chant_qr.py` uses OpenCV to decode
-and re-encode the same destination, retaining a four-module quiet zone and integer
-scaling. It generates ignored `main/chant_qr_local.h`, a flash-resident I1 bitmap
-with an eight-byte black/white palette. The supplied image produces a 196 square
-pixel asset (4,908 bytes). The QR, its destination and paired firmware are local
-deployment material and must not enter public commits.
+On 2026-10-20 the owner authorized publication of the supplied QR. Its source,
+verified preview and I1 header are `images/chant-qr.jpg`,
+`images/chant-qr-preview.png` and `images/chant-qr.h`. Regenerate with
+`python3 tools/prepare_chant_qr.py --public assets/images/chant-qr.jpg`.
+OpenCV decodes and re-encodes the same destination without the decorative logo,
+retaining a four-module quiet zone and integer scaling. The 196 square pixel
+asset is 4,908 bytes, including its eight-byte black/white palette.
+Without `--public`, the script still generates ignored `main/chant_qr_local.h`
+and `images/chant-qr-local*` for private overrides. Permission to publish this
+QR does not include pairing keys, Wi-Fi passwords or personalized firmware.
 
 Store reusable source images and generated display assets in `images/`.
 

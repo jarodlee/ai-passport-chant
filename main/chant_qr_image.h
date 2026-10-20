@@ -1,4 +1,4 @@
 #pragma once
 #include "lvgl.h"
-/* Optional local asset; NULL in a checkout without its private bitmap. */
+/* Published QR bitmap, optionally overridden by an ignored local asset. */
 const lv_image_dsc_t *chant_qr_image(void);

@@ -190,9 +190,12 @@ re-encodes its exact destination without the decorative logo, and verifies the
 packed display bitmap decodes to the same value. It never prints that value.
 The supplied image produces a 196-pixel square and 4,908 bytes of indexed data.
 Its source/preview `assets/images/chant-qr-local*` and generated
-`main/chant_qr_local.h` are Git-ignored. A public checkout without that header
-still builds and shows an unconfigured message. Do not publish the private QR
-image or firmware containing it. The feature does not rewrite the NFC tag.
+`main/chant_qr_local.h` are Git-ignored. On 2026-10-20 the owner authorized the
+supplied QR for public distribution. Public builds use `assets/images/chant-qr.h`
+when no local override exists. Regenerate the published asset with
+`python3 tools/prepare_chant_qr.py --public assets/images/chant-qr.jpg`.
+Wi-Fi credentials, pairing keys and personalized firmware remain private.
+The feature does not rewrite the NFC tag.
 
 Host navigation and bitmap decoding do not validate LCD scanning. Device checks
 must cover phone scanning, title/battery/footer clearance, returning to other

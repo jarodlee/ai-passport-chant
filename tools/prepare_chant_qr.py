@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare an ignored, scan-verified I1 QR asset (requires opencv-python).
+"""Prepare a scan-verified I1 QR asset (requires opencv-python).
 
 Run with a local source image. The decoded destination is never logged. Re-encode
 it without a logo, retain a four-module quiet zone, and use integer pixel scaling.
@@ -17,6 +17,8 @@ def main():
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("image", type=Path)
+    parser.add_argument("--public", action="store_true",
+                        help="Write tracked assets; use only with owner publication permission")
     args = parser.parse_args()
     original = cv2.imread(str(args.image))
     if original is None:
@@ -48,20 +50,22 @@ def main():
     result, _, _ = detector.detectAndDecode(readback)
     if result != payload:
         raise SystemExit("Display-sized QR failed scan verification")
-    output = ROOT/"main/chant_qr_local.h"
-    output.write_text("// Private local QR bitmap; do not publish.\n#pragma once\n" +
+    output = ROOT/("assets/images/chant-qr.h" if args.public else "main/chant_qr_local.h")
+    comment = "Owner-approved public QR bitmap." if args.public else "Private local QR bitmap; do not publish."
+    output.write_text(f"// {comment}\n#pragma once\n" +
         f"#define CHANT_QR_WIDTH {width}\n#define CHANT_QR_HEIGHT {width}\n" +
         f"#define CHANT_QR_STRIDE {stride}\n" +
         "static const uint8_t chant_qr_pixels[] = {\n" +
         ",\n".join(",".join(f"0x{v:02x}" for v in data[i:i+24]) for i in range(0,len(data),24)) +
         "\n};\n")
     images = ROOT/"assets/images"
-    local_source = images/("chant-qr-local"+args.image.suffix.lower())
+    stem = "chant-qr" if args.public else "chant-qr-local"
+    local_source = images/(stem+args.image.suffix.lower())
     if args.image.resolve() != local_source.resolve():
         shutil.copyfile(args.image, local_source)
-    cv2.imwrite(str(images/"chant-qr-local-preview.png"),readback)
+    cv2.imwrite(str(images/(stem+"-preview.png")),readback)
     print(f"QR: PASS ({width}x{width}, {scale} pixels/module, {len(data)} bytes, decoded match)")
-    print("Private source, preview and header remain Git-ignored")
+    print("Public assets prepared" if args.public else "Private source, preview and header remain Git-ignored")
 
 
 if __name__ == "__main__":

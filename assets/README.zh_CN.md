@@ -27,12 +27,14 @@
 
 ## 图片（images）
 
-唱诵应用二维码页使用用户提供的本地图片，原图和验证预览保存为
-`images/chant-qr-local*`，由 Git 忽略，不假定具有公开再分发许可。
-`tools/prepare_chant_qr.py` 用 OpenCV 解码并重新编码相同目标，保留四模块白边、
-采用整数倍像素缩放，生成被忽略的 `main/chant_qr_local.h`，以带八字节黑白调色板
-的 I1 位图保存在 Flash。本次图片为 196 像素方图、4,908 字节。二维码、目标和
-配套本地固件不进入公开提交。
+用户于 2026-10-20 授权公开本次二维码。原图、验证预览及 I1 头文件分别为
+`images/chant-qr.jpg`、`images/chant-qr-preview.png`、`images/chant-qr.h`。
+运行 `python3 tools/prepare_chant_qr.py --public assets/images/chant-qr.jpg`
+可重新生成。OpenCV 解码后去掉装饰图标，重新编码相同目标，保留四模块白边、
+采用整数倍像素缩放；196 像素方图共 4,908 字节，含八字节黑白调色板。
+不带 `--public` 时仍生成被忽略的 `main/chant_qr_local.h` 和
+`images/chant-qr-local*`，可覆盖公开默认图片。本次授权不包括配对密钥、
+Wi-Fi 密码及含私有配置的本机固件。
 
 可复用的源图与生成的显示资产放在 `images/`。
 
